@@ -1,6 +1,5 @@
 package com.kevinnorth.gameoflife.state;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.SequencedCollection;
 import java.util.Set;
@@ -14,34 +13,34 @@ public class WrappedGrid extends Grid {
     super(cells);
   }
 
-  private int wrapRow(int row) {
-    if (row < 0) {
-      return (row % this.height) + this.height;
+  private int wrapX(int x) {
+    if (x < 0) {
+      return (x % this.width) + this.width;
     }
 
-    return row % height;
+    return x % this.width;
   }
 
-  private int wrapColumn(int column) {
-    if (column < 0) {
-      return (column % this.width) + this.width;
+  private int wrapY(int y) {
+    if (y < 0) {
+      return (y % this.height) + this.height;
     }
 
-    return column % width;
+    return y % this.height;
   }
 
-  public Collection<Cell> getNeighbors(int row, int col) {
+  public Set<Cell> getNeighbors(int x, int y) {
     Set<Cell> neighbors = new HashSet<Cell>();
 
-    for(int adjRow = row - 1; adjRow <= row + 1; adjRow ++) {
-      for(int adjCol = col - 1; adjCol <= col + 1; adjCol++) {
-        if(adjRow != row && adjCol != col) {
-          int wrappedRow = wrapRow(adjRow);
-          int wrappedCol = wrapColumn(adjCol);
+    for (int adjX = x - 1; adjX <= x + 1; adjX++) {
+      for (int adjY = y - 1; adjY <= y + 1; adjY++) {
+        if (adjX != x && adjY != y) {
+          int wrappedX = wrapX(adjX);
+          int wrappedY = wrapY(adjY);
 
-          neighbors.add(this.cells.get(wrappedRow).get(wrappedCol));
+          neighbors.add(this.cells.get(wrappedX).get(wrappedY));
         }
-      }        
+      }
     }
 
     return neighbors;

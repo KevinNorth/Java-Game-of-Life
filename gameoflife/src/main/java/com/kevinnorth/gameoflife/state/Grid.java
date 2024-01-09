@@ -1,8 +1,8 @@
 package com.kevinnorth.gameoflife.state;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.SequencedCollection;
+import java.util.Set;
 
 public abstract class Grid {
   protected ArrayList<ArrayList<Cell>> cells;
@@ -10,37 +10,38 @@ public abstract class Grid {
   protected final int height;
 
   public Grid(int width, int height) {
-    this.height = height;
     this.width = width;
-    this.cells = new ArrayList<ArrayList<Cell>>(height);
+    this.height = height;
+    this.cells = new ArrayList<ArrayList<Cell>>(width);
 
-    for(int row = 0; row < height; row++) {
-      var rowContents = new ArrayList<Cell>(width);
-      for (int col = 0; col < width; col++) {
-        rowContents.add(new Cell(false));
+    for (int x = 0; x < width; x++) {
+      var colContents = new ArrayList<Cell>(height);
+      for (int y = 0; y < height; y++) {
+        colContents.add(new Cell(false));
       }
-      cells.add(rowContents);
+      cells.add(colContents);
     }
   }
 
   public Grid(SequencedCollection<SequencedCollection<Cell>> cells) {
-    this.height = cells.size();
-    this.width = cells.getFirst().size();
-    
-    cells.forEach((row) -> {
-      if(row.size() != width) {
-        throw new IllegalArgumentException("All rows in cells must be the same length");
-      }
-    });
+    this.width = cells.size();
+    this.height = cells.getFirst().size();
 
-    this.cells = new ArrayList<ArrayList<Cell>>(height);
+    cells.forEach(
+        (column) -> {
+          if (column.size() != height) {
+            throw new IllegalArgumentException("All rows in cells must be the same length");
+          }
+        });
 
-    for(SequencedCollection<Cell> row : cells) {
-      var rowContents = new ArrayList<Cell>(width);
-      for (Cell col : row) {
-        rowContents.add(col);
+    this.cells = new ArrayList<ArrayList<Cell>>(width);
+
+    for (SequencedCollection<Cell> column : cells) {
+      var colummContents = new ArrayList<Cell>(height);
+      for (Cell cell : column) {
+        colummContents.add(cell);
       }
-      this.cells.add(rowContents);
+      this.cells.add(colummContents);
     }
   }
 
@@ -52,13 +53,13 @@ public abstract class Grid {
     return this.width;
   }
 
-  public Cell getCell(int row, int col) {
-    if (row < 0 || row >= this.height || col < 0 || col >= this.width) {
+  public Cell getCell(int x, int y) {
+    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
       throw new IllegalArgumentException("Cell coordinates must be within the grid's dimensions");
     }
 
-    return this.cells.get(row).get(col);
+    return this.cells.get(x).get(y);
   }
 
-  public abstract Collection<Cell> getNeighbors(int row, int col);
+  public abstract Set<Cell> getNeighbors(int x, int y);
 }
