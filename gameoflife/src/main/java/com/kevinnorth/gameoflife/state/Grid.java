@@ -2,9 +2,8 @@ package com.kevinnorth.gameoflife.state;
 
 import java.util.ArrayList;
 import java.util.SequencedCollection;
-import java.util.Set;
 
-public abstract class Grid {
+public class Grid {
   protected ArrayList<ArrayList<Cell>> cells;
   protected final int width;
   protected final int height;
@@ -60,6 +59,4 @@ public abstract class Grid {
 
     return this.cells.get(x).get(y);
   }
-
-  public abstract Set<Cell> getNeighbors(int x, int y);
 }
