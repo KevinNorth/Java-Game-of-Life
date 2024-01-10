@@ -2,9 +2,8 @@ package com.kevinnorth.gameoflife.state;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.*;
-
 import java.util.ArrayList;
+import org.junit.jupiter.api.*;
 
 public class GridTest {
   @Test
@@ -18,7 +17,6 @@ public class GridTest {
     }
   }
 
-
   @Test
   public void IfConstructedWithCollectionOfCellsThenCreatesGridOfMatchingCells() {
     boolean[][] initialState = {
@@ -31,7 +29,7 @@ public class GridTest {
     for (int x = 0; x < initialState.length; x++) {
       var column = new ArrayList<Cell>(initialState[x].length);
 
-      for(int y = 0; y < initialState[x].length; y++) {
+      for (int y = 0; y < initialState[x].length; y++) {
         column.add(new Cell(initialState[x][y]));
       }
 
@@ -41,7 +39,7 @@ public class GridTest {
     var grid = new Grid(originalCells);
 
     for (int x = 0; x < initialState.length; x++) {
-      for(int y = 0; y < initialState[x].length; y++) {
+      for (int y = 0; y < initialState[x].length; y++) {
         assertEquals(initialState[x][y], grid.getCell(x, y).alive());
       }
     }
