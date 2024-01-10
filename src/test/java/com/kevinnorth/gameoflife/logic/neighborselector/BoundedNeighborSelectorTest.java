@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+// I'll admit this isn't the prettiest code, and it probably would be just as good to write a
+// handful of clear, specific test cases.
+// But I was excited to see that JUnit 5 includes parameterized tests and gosh darn it, I wanted to
+// give them a try!
 public class BoundedNeighborSelectorTest {
   /**
    * Generates all possible boolean arrays of length 8. Useful for testing the neighbors of a Cell
