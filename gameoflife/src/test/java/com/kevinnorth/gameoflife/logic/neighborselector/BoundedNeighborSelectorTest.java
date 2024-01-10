@@ -1,8 +1,7 @@
-package com.kevinnorth.gameoflife.logic;
+package com.kevinnorth.gameoflife.logic.neighborselector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.kevinnorth.gameoflife.logic.neighborselector.BoundedNeighborSelector;
 import com.kevinnorth.gameoflife.state.Cell;
 import com.kevinnorth.gameoflife.state.Grid;
 import com.kevinnorth.gameoflife.testutil.BooleanArrayGenerator;
