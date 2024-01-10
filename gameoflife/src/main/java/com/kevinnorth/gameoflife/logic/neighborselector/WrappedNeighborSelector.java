@@ -28,7 +28,7 @@ public class WrappedNeighborSelector implements NeighborSelector {
 
     for (int adjX = x - 1; adjX <= x + 1; adjX++) {
       for (int adjY = y - 1; adjY <= y + 1; adjY++) {
-        if (adjX != x && adjY != y) {
+        if (!(adjX == x && adjY == y)) {
           int wrappedX = wrapX(adjX, grid.getWidth());
           int wrappedY = wrapY(adjY, grid.getHeight());
 

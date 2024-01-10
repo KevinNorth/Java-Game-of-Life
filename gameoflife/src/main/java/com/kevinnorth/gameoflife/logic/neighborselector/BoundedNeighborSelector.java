@@ -16,8 +16,8 @@ public class BoundedNeighborSelector implements NeighborSelector {
 
     for (int adjX = x - 1; adjX <= x + 1; adjX++) {
       for (int adjY = y - 1; adjY <= y + 1; adjY++) {
-        if (adjX != x && adjY != y && areCoordinatesInBounds(grid, x, y)) {
-          neighbors.add(grid.getCell(x, y));
+        if (!(adjX == x && adjY == y) && areCoordinatesInBounds(grid, adjX, adjY)) {
+          neighbors.add(grid.getCell(adjX, adjY));
         }
       }
     }

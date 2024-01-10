@@ -22,7 +22,7 @@ public class Grid {
     }
   }
 
-  public Grid(SequencedCollection<SequencedCollection<Cell>> cells) {
+  public <T extends SequencedCollection<Cell>, S extends SequencedCollection<T>> Grid(S cells) {
     this.width = cells.size();
     this.height = cells.getFirst().size();
 
