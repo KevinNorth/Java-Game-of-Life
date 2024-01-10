@@ -14,10 +14,6 @@ jobs:
     permissions:
       contents: write
 
-    defaults:
-      run:
-        working-directory: ./gameoflife
-
     runs-on: ubuntu-latest
 
     steps:
@@ -34,14 +30,8 @@ jobs:
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3.0.3
-      with:
-        directory: ./gameoflife
 
   test:
-    defaults:
-      run:
-        working-directory: ./gameoflife
-
     runs-on: ubuntu-latest
 
     steps:
@@ -56,10 +46,6 @@ jobs:
       run: mvn test
 
   lint:
-    defaults:
-      run:
-        working-directory: ./gameoflife
-
     runs-on: ubuntu-latest
 
     steps:
@@ -74,10 +60,6 @@ jobs:
       run: mvn spotless:check
 
   report:
-    defaults:
-      run:
-        working-directory: ./gameoflife
-
     runs-on: ubuntu-latest
 
     steps:
@@ -94,4 +76,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: maven-report
-        path: ./gameoflife/target/site/**/*.*
+        path: ./target/site/**/*.*
