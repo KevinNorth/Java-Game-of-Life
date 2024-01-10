@@ -2,15 +2,16 @@ package com.kevinnorth.gameoflife.logic.neighborselector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.kevinnorth.gameoflife.state.Cell;
 import com.kevinnorth.gameoflife.state.Grid;
 import com.kevinnorth.gameoflife.testutil.BooleanArrayGenerator;
-import java.util.ArrayList;
+import com.kevinnorth.gameoflife.testutil.GridFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-// I'll admit this isn't the prettiest code, and it probably would be just as good to write a handful of clear, specific test cases.
-// But I was excited to see that JUnit 5 includes parameterized tests and gosh darn it, I wanted to give them a try!
+// I'll admit this isn't the prettiest code, and it probably would be just as good to write a
+// handful of clear, specific test cases.
+// But I was excited to see that JUnit 5 includes parameterized tests and gosh darn it, I wanted to
+// give them a try!
 public class WrappedNeighborSelectorTest {
   /**
    * Generates all possible boolean arrays of length 8. Useful for testing the neighbors of a Cell.
@@ -19,22 +20,6 @@ public class WrappedNeighborSelectorTest {
    */
   public static boolean[][] generateBooleanArraysOfLength8() {
     return BooleanArrayGenerator.generateBooleanArrays(8);
-  }
-
-  private static Grid generateGridFromArray(boolean[][] initialState) {
-    var cells = new ArrayList<ArrayList<Cell>>();
-
-    for (int x = 0; x < initialState[0].length; x++) {
-      var column = new ArrayList<Cell>();
-
-      for (int y = 0; y < initialState.length; y++) {
-        column.add(new Cell(initialState[y][x]));
-      }
-
-      cells.add(column);
-    }
-
-    return new Grid(cells);
   }
 
   private static void assertNeighborSelectorProducesCorrectCells(
@@ -68,7 +53,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[5], neighborStates[6], neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 1, 1);
   }
@@ -82,7 +67,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[5], neighborStates[6], neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 1, 0);
   }
@@ -96,7 +81,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[5], neighborStates[6], neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 0, 1);
   }
@@ -110,7 +95,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[5], neighborStates[6], neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 2, 1);
   }
@@ -124,7 +109,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[6], true, neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 1, 2);
   }
@@ -138,7 +123,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[5], neighborStates[6], neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 0, 0);
   }
@@ -152,7 +137,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[5], neighborStates[6], neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 2, 0);
   }
@@ -166,7 +151,7 @@ public class WrappedNeighborSelectorTest {
       {true, neighborStates[6], neighborStates[7]}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 0, 2);
   }
@@ -180,7 +165,7 @@ public class WrappedNeighborSelectorTest {
       {neighborStates[6], neighborStates[7], true}
     };
 
-    Grid grid = generateGridFromArray(initialState);
+    Grid grid = GridFactory.generateGridFromArray(initialState);
 
     assertNeighborSelectorProducesCorrectCells(grid, neighborStates, 2, 2);
   }

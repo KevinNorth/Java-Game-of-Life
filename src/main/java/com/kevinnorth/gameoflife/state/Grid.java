@@ -59,4 +59,73 @@ public class Grid {
 
     return this.cells.get(x).get(y);
   }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (other == this) {
+      return true;
+    }
+
+    if (!(other instanceof Grid)) {
+      return false;
+    }
+
+    Grid otherGrid = (Grid) other;
+
+    if (this.height != otherGrid.height) {
+      return false;
+    }
+
+    if (this.width != otherGrid.width) {
+      return false;
+    }
+
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        if (this.getCell(x, y).alive() != otherGrid.getCell(x, y).alive()) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = this.height * 11;
+    hash += this.width * 13;
+
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < width; y++) {
+        if (getCell(x, y).alive()) {
+          hash += 43 * x + 57 * y;
+        }
+      }
+    }
+
+    return hash;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder();
+
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        if (getCell(x, y).alive()) {
+          str.append('O');
+        } else {
+          str.append('.');
+        }
+      }
+      str.append('\n');
+    }
+
+    return str.toString().trim();
+  }
 }
