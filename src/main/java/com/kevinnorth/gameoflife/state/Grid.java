@@ -22,7 +22,7 @@ public class Grid {
     }
   }
 
-  public <T extends SequencedCollection<Cell>, S extends SequencedCollection<T>> Grid(S cells) {
+  public <T extends SequencedCollection<? extends SequencedCollection<Cell>>> Grid(T cells) {
     this.width = cells.size();
     this.height = cells.getFirst().size();
 
@@ -58,6 +58,17 @@ public class Grid {
     }
 
     return this.cells.get(x).get(y);
+  }
+
+  public ArrayList<ArrayList<Cell>> getCopyOfCells() {
+    var copiedCells = new ArrayList<ArrayList<Cell>>();
+
+    for (int x = 0; x < width; x++) {
+      var column = new ArrayList<Cell>(this.cells.get(x));
+      copiedCells.add(column);
+    }
+
+    return cells;
   }
 
   @Override
