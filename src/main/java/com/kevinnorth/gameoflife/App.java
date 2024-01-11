@@ -20,8 +20,6 @@ public class App extends Application {
     var scrollPane = new ScrollPane(game);
     scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
     scrollPane.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.ALWAYS);
-    scrollPane.fitToHeightProperty().set(true);
-    scrollPane.fitToWidthProperty().set(true);
 
     var nextGenerationButton = new Button("Step");
     nextGenerationButton.setOnAction((actionEvent) -> game.runNextGeneration());

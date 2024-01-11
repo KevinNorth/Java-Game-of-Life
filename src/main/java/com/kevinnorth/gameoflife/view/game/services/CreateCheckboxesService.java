@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.CheckBox;
-import javafx.scene.layout.GridPane;
 
-public class CreateCheckboxesService extends Service<GridPane> {
+public class CreateCheckboxesService extends Service<ArrayList<ArrayList<CheckBox>>> {
   public static interface OnClickHandler {
     public void onClick(int x, int y);
   }
@@ -24,13 +23,15 @@ public class CreateCheckboxesService extends Service<GridPane> {
   }
 
   @Override
-  protected Task<GridPane> createTask() {
-    return new Task<GridPane>() {
+  protected Task<ArrayList<ArrayList<CheckBox>>> createTask() {
+    return new Task<ArrayList<ArrayList<CheckBox>>>() {
       @Override
-      protected GridPane call() {
-        GridPane pane = new GridPane();
+      protected ArrayList<ArrayList<CheckBox>> call() {
+        var checkBoxes = new ArrayList<ArrayList<CheckBox>>();
 
         for (int x = 0; x < cells.size(); x++) {
+          var column = new ArrayList<CheckBox>();
+
           for (int y = 0; y < cells.get(x).size(); y++) {
             CheckBox checkBox = new CheckBox();
             checkBox.setSelected(cells.get(x).get(y).alive());
@@ -39,11 +40,13 @@ public class CreateCheckboxesService extends Service<GridPane> {
             final int finalX = x;
             final int finalY = y;
             checkBox.setOnAction((actionEvent) -> onClickHandler.onClick(finalX, finalY));
-            pane.add(checkBox, x, y);
+            column.add(checkBox);
           }
+
+          checkBoxes.add(column);
         }
 
-        return pane;
+        return checkBoxes;
       }
     };
   }
