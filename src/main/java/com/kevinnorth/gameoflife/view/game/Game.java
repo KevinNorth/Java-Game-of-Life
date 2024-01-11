@@ -104,6 +104,7 @@ public class Game extends Region {
         final int finalX = x;
         final int finalY = y;
         checkBox.setOnAction((actionEvent) -> onCellClicked(finalX, finalY));
+        pane.add(checkBox, x, y);
       }
     }
 
