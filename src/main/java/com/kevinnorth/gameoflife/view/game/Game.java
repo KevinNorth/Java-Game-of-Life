@@ -1,12 +1,12 @@
 package com.kevinnorth.gameoflife.view.game;
 
 import com.kevinnorth.gameoflife.logic.generations.EdgeBehavior;
-import com.kevinnorth.gameoflife.logic.generations.GenerationController;
 import com.kevinnorth.gameoflife.state.Cell;
-import com.kevinnorth.gameoflife.state.Grid;
+import com.kevinnorth.gameoflife.view.game.services.CreateCheckboxesService;
+import com.kevinnorth.gameoflife.view.game.services.CreateDeadCellsService;
+import com.kevinnorth.gameoflife.view.game.services.RunGenerationService;
+import com.kevinnorth.gameoflife.view.game.services.ServiceFailedException;
 import java.util.ArrayList;
-import javafx.scene.control.CheckBox;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
 public class Game extends Region {
@@ -14,57 +14,61 @@ public class Game extends Region {
   private ArrayList<ArrayList<Cell>> logicalCells;
   private double cellSize;
 
-  private static ArrayList<ArrayList<Cell>> extractCellsFromGrid(Grid grid) {
-    var cells = new ArrayList<ArrayList<Cell>>();
-
-    for (int x = 0; x < grid.getWidth(); x++) {
-      var column = new ArrayList<Cell>();
-
-      for (int y = 0; y < grid.getHeight(); y++) {
-        column.add(grid.getCell(x, y));
-      }
-
-      cells.add(column);
-    }
-
-    return cells;
-  }
-
-  private static ArrayList<ArrayList<Cell>> createDeadCells(int width, int height) {
-    var cells = new ArrayList<ArrayList<Cell>>();
-
-    for (int x = 0; x < width; x++) {
-      var column = new ArrayList<Cell>();
-
-      for (int y = 0; y < height; y++) {
-        column.add(new Cell(false));
-      }
-
-      cells.add(column);
-    }
-
-    return cells;
-  }
-
   public Game(int height, int width, double cellSize, EdgeBehavior edgeBehavior) {
-    this.logicalCells = createDeadCells(width, height);
     this.edgeBehavior = edgeBehavior;
     this.cellSize = cellSize;
+    this.logicalCells = new ArrayList<>();
 
-    render();
+    CreateDeadCellsService service = new CreateDeadCellsService(width, height);
+
+    service.setOnSucceeded(
+        (_event) -> {
+          this.logicalCells = service.getValue();
+          render();
+        });
+
+    service.setOnFailed(
+        (event) -> {
+          throw new ServiceFailedException(event);
+        });
+
+    service.start();
   }
 
   public void resetGrid() {
-    this.logicalCells = createDeadCells(getLogicalWidth(), getLogicalHeight());
+    CreateDeadCellsService service =
+        new CreateDeadCellsService(getLogicalWidth(), getLogicalHeight());
+    service.start();
+
+    service.setOnSucceeded(
+        (_event) -> {
+          this.logicalCells = service.getValue();
+          render();
+        });
+
+    service.setOnFailed(
+        (event) -> {
+          throw new ServiceFailedException(event);
+        });
+
     render();
   }
 
   public void runNextGeneration() {
-    var grid = new Grid(logicalCells);
-    var nextGeneration = GenerationController.determineNextGeneration(grid, this.edgeBehavior);
-    this.logicalCells = extractCellsFromGrid(nextGeneration);
+    var service =
+        new RunGenerationService<ArrayList<ArrayList<Cell>>>(this.logicalCells, this.edgeBehavior);
+    service.setOnSucceeded(
+        (_event) -> {
+          this.logicalCells = service.getValue();
+          render();
+        });
 
-    render();
+    service.setOnFailed(
+        (event) -> {
+          throw new ServiceFailedException(event);
+        });
+
+    service.start();
   }
 
   public int getLogicalWidth() {
@@ -92,24 +96,22 @@ public class Game extends Region {
     render();
   }
 
-  private void render() {
-    GridPane pane = new GridPane();
+  private void render() throws ServiceFailedException {
+    CreateCheckboxesService service =
+        new CreateCheckboxesService(logicalCells, cellSize, (x, y) -> onCellClicked(x, y));
 
-    for (int x = 0; x < getLogicalWidth(); x++) {
-      for (int y = 0; y < getLogicalHeight(); y++) {
-        CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(logicalCells.get(x).get(y).alive());
-        checkBox.setPrefSize(cellSize, cellSize);
+    service.setOnSucceeded(
+        (_event) -> {
+          this.getChildren().removeAll();
+          this.getChildren().add(service.getValue());
+        });
 
-        final int finalX = x;
-        final int finalY = y;
-        checkBox.setOnAction((actionEvent) -> onCellClicked(finalX, finalY));
-        pane.add(checkBox, x, y);
-      }
-    }
+    service.setOnFailed(
+        (event) -> {
+          throw new ServiceFailedException(event);
+        });
 
-    this.getChildren().removeAll();
-    this.getChildren().add(pane);
+    service.start();
   }
 
   private void onCellClicked(int x, int y) {
