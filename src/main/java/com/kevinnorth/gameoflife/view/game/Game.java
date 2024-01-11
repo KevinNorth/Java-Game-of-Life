@@ -4,9 +4,7 @@ import com.kevinnorth.gameoflife.logic.generations.EdgeBehavior;
 import com.kevinnorth.gameoflife.logic.generations.GenerationController;
 import com.kevinnorth.gameoflife.state.Cell;
 import com.kevinnorth.gameoflife.state.Grid;
-
 import java.util.ArrayList;
-
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -18,7 +16,7 @@ public class Game extends Region {
 
   private static ArrayList<ArrayList<Cell>> extractCellsFromGrid(Grid grid) {
     var cells = new ArrayList<ArrayList<Cell>>();
-    
+
     for (int x = 0; x < grid.getWidth(); x++) {
       var column = new ArrayList<Cell>();
 
@@ -34,7 +32,7 @@ public class Game extends Region {
 
   private static ArrayList<ArrayList<Cell>> createDeadCells(int width, int height) {
     var cells = new ArrayList<ArrayList<Cell>>();
-    
+
     for (int x = 0; x < width; x++) {
       var column = new ArrayList<Cell>();
 
