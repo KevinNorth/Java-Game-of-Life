@@ -8,12 +8,7 @@ import com.kevinnorth.gameoflife.state.Grid;
 import java.util.ArrayList;
 import java.util.Set;
 
-/**
- * Updates a Game of Life grid by one generation.
- *
- * <p>("Generation" isn't a vague, unhelpful verb. In this context, it's the specific noun from
- * Conway's Game of Life.)
- */
+/** Updates a Game of Life grid by one generation. */
 public final class GenerationController {
   private static Cell determineNextCellState(Cell cell, Set<Cell> neighbors) {
     long numNeighborsAlive = neighbors.stream().filter((neighbor) -> neighbor.alive()).count();
