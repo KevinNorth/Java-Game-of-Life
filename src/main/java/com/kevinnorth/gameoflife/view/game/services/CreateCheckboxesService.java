@@ -14,8 +14,7 @@ public class CreateCheckboxesService extends Service<ArrayList<ArrayList<CheckBo
   private ArrayList<ArrayList<Cell>> cells;
   private OnClickHandler onClickHandler;
 
-  public CreateCheckboxesService(
-      ArrayList<ArrayList<Cell>> cells, OnClickHandler onClickHandler) {
+  public CreateCheckboxesService(ArrayList<ArrayList<Cell>> cells, OnClickHandler onClickHandler) {
     this.cells = cells;
     this.onClickHandler = onClickHandler;
   }

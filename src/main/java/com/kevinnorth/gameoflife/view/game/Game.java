@@ -6,11 +6,11 @@ import com.kevinnorth.gameoflife.view.game.services.CreateCheckboxesService;
 import com.kevinnorth.gameoflife.view.game.services.CreateDeadCellsService;
 import com.kevinnorth.gameoflife.view.game.services.RunGenerationService;
 import com.kevinnorth.gameoflife.view.game.services.ServiceFailedException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -129,11 +129,12 @@ public class Game extends Region {
             File tempStylesheet;
             try {
               tempStylesheet = generateStylesheetForCheckBoxSize();
-            } catch(IOException err) {
+            } catch (IOException err) {
               throw new IllegalStateException(err);
             }
 
             GridPane gridPane = new GridPane();
+            gridPane.setAlignment(Pos.CENTER);
             gridPane.getStylesheets().add(tempStylesheet.toURI().toString());
 
             var newCheckBoxes = service.getValue();
@@ -171,7 +172,8 @@ public class Game extends Region {
 
   private File generateStylesheetForCheckBoxSize() throws IOException {
     // Borrowed from https://stackoverflow.com/a/44409349/473792
-    // It seems that this is truly the best way to programmatically create full CSS stylesheets at runtime
+    // It seems that this is truly the best way to programmatically create full CSS stylesheets at
+    // runtime
     File tempStylesheet = File.createTempFile("gameoflife-checkboxsize", ".css");
     tempStylesheet.deleteOnExit();
 
@@ -183,7 +185,7 @@ public class Game extends Region {
       printWriter.println("  -fx-padding: " + cellSize + "px;");
       printWriter.println("}");
     }
-    
+
     return tempStylesheet;
   }
 

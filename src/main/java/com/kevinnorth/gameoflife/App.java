@@ -5,6 +5,7 @@ import com.kevinnorth.gameoflife.view.game.Game;
 import java.util.function.UnaryOperator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -35,7 +36,7 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) {
-    var game = new Game(17, 28, 8, EdgeBehavior.BOUNDED);
+    var game = new Game(14, 28, 8, EdgeBehavior.BOUNDED);
 
     var tabPane = new TabPane();
     tabPane.getTabs().add(prepareSimiulationTab(game));
@@ -57,13 +58,17 @@ public class App extends Application {
     var scrollPane = new ScrollPane(game);
     scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     scrollPane.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+    scrollPane.setMinSize(0, 0);
 
     var nextGenerationButton = new Button("Step");
     nextGenerationButton.setOnAction((actionEvent) -> game.runNextGeneration());
+    nextGenerationButton.setPrefSize(140, 100);
 
     var rootPane = new VBox(scrollPane, nextGenerationButton);
+    rootPane.setAlignment(Pos.CENTER);
     VBox.setVgrow(scrollPane, Priority.ALWAYS);
     VBox.setMargin(scrollPane, new Insets(0, 0, 10, 0));
+    VBox.setMargin(nextGenerationButton, new Insets(5, 5, 5, 5));
 
     var tab = new Tab("Simulation", rootPane);
     tab.setClosable(false);
@@ -77,15 +82,15 @@ public class App extends Application {
 
     final var gridSizeLabel = new Label("Grid Size");
     final var gridWidthLabel = new Label("Width");
-    final var gridWidthInput = createNumberField(game.getLogicalWidth());
+    final var gridWidthInput = createNumberField(14);
     final var gridWidthPane = new HBox(gridWidthLabel, gridWidthInput);
     final var gridHeightLabel = new Label("Height");
-    final var gridHeightInput = createNumberField(game.getLogicalHeight());
+    final var gridHeightInput = createNumberField(28);
     final var gridHeightPane = new HBox(gridHeightLabel, gridHeightInput);
     final var gridSizePane = new HBox(gridSizeLabel, gridWidthPane, gridHeightPane);
 
     final var cellSizeLabel = new Label("Cell size");
-    final var cellSizeInput = createNumberField((int) Math.floor(game.getCellSize()));
+    final var cellSizeInput = createNumberField(8);
     final var cellSizeUnits = new Label("pixels");
     final var cellSizePane = new HBox(cellSizeLabel, cellSizeInput, cellSizeUnits);
 
