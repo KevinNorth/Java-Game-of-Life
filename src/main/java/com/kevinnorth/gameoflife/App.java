@@ -36,7 +36,7 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) {
-    var game = new Game(14, 28, 8, EdgeBehavior.BOUNDED);
+    var game = new Game(12, 24, 8, EdgeBehavior.BOUNDED);
 
     var tabPane = new TabPane();
     tabPane.getTabs().add(prepareSimiulationTab(game));
@@ -66,6 +66,8 @@ public class App extends Application {
 
     var rootPane = new VBox(scrollPane, nextGenerationButton);
     rootPane.setAlignment(Pos.CENTER);
+    rootPane.setPadding(new Insets(15));
+
     VBox.setVgrow(scrollPane, Priority.ALWAYS);
     VBox.setMargin(scrollPane, new Insets(0, 0, 10, 0));
     VBox.setMargin(nextGenerationButton, new Insets(5, 5, 5, 5));
@@ -79,22 +81,39 @@ public class App extends Application {
     final var wrapEdgesLabel = new Label("Wrap Edges");
     final var wrapEdgesCheckbox = new CheckBox();
     final var wrapEdgesPane = new HBox(wrapEdgesLabel, wrapEdgesCheckbox);
+    wrapEdgesPane.setAlignment(Pos.BASELINE_LEFT);
+    HBox.setMargin(wrapEdgesLabel, new Insets(0, 10, 0, 0));
 
     final var gridSizeLabel = new Label("Grid Size");
+    HBox.setMargin(gridSizeLabel, new Insets(0, 20, 0, 0));
+
     final var gridWidthLabel = new Label("Width");
-    final var gridWidthInput = createNumberField(14);
+    final var gridWidthInput = createNumberField(24);
     final var gridWidthPane = new HBox(gridWidthLabel, gridWidthInput);
+    gridWidthPane.setAlignment(Pos.BASELINE_LEFT);
+    HBox.setMargin(gridWidthLabel, new Insets(0, 10, 0, 0));
+    HBox.setMargin(gridWidthPane, new Insets(0, 20, 0, 0));
+
     final var gridHeightLabel = new Label("Height");
-    final var gridHeightInput = createNumberField(28);
+    final var gridHeightInput = createNumberField(12);
     final var gridHeightPane = new HBox(gridHeightLabel, gridHeightInput);
+    gridHeightPane.setAlignment(Pos.BASELINE_LEFT);
+    HBox.setMargin(gridHeightLabel, new Insets(0, 10, 0, 0));
+    HBox.setMargin(gridHeightPane, new Insets(0, 20, 0, 0));
+
     final var gridSizePane = new HBox(gridSizeLabel, gridWidthPane, gridHeightPane);
+    gridSizePane.setAlignment(Pos.BASELINE_LEFT);
 
     final var cellSizeLabel = new Label("Cell size");
     final var cellSizeInput = createNumberField(8);
     final var cellSizeUnits = new Label("pixels");
     final var cellSizePane = new HBox(cellSizeLabel, cellSizeInput, cellSizeUnits);
+    cellSizePane.setAlignment(Pos.BASELINE_LEFT);
+    HBox.setMargin(cellSizeLabel, new Insets(0, 10, 0, 0));
+    HBox.setMargin(cellSizeInput, new Insets(0, 3, 0, 0));
 
     final var saveButton = new Button("Save");
+    saveButton.setPrefSize(60, 20);
     saveButton.setOnAction(
         (_event) -> {
           var converter = new IntegerStringConverter();
@@ -107,6 +126,9 @@ public class App extends Application {
         });
 
     var rootPane = new VBox(wrapEdgesPane, gridSizePane, cellSizePane, saveButton);
+    rootPane.setAlignment(Pos.TOP_LEFT);
+    rootPane.setSpacing(20);
+    rootPane.setPadding(new Insets(15));
 
     var scrollPane = new ScrollPane(rootPane);
     scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
