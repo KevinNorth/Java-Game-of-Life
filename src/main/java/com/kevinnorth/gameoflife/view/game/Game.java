@@ -6,7 +6,11 @@ import com.kevinnorth.gameoflife.view.game.services.CreateCheckboxesService;
 import com.kevinnorth.gameoflife.view.game.services.CreateDeadCellsService;
 import com.kevinnorth.gameoflife.view.game.services.RunGenerationService;
 import com.kevinnorth.gameoflife.view.game.services.ServiceFailedException;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -21,14 +25,14 @@ public class Game extends Region {
     this.edgeBehavior = edgeBehavior;
     this.cellSize = cellSize;
     this.logicalCells = new ArrayList<ArrayList<Cell>>();
-    this.cachedCheckBoxes = new ArrayList<ArrayList<CheckBox>>();
+    this.cachedCheckBoxes = null;
 
     CreateDeadCellsService service = new CreateDeadCellsService(width, height);
 
     service.setOnSucceeded(
         (_event) -> {
           this.logicalCells = service.getValue();
-          render();
+          render(true);
         });
 
     service.setOnFailed(
@@ -42,12 +46,11 @@ public class Game extends Region {
   public void resetGrid() {
     CreateDeadCellsService service =
         new CreateDeadCellsService(getLogicalWidth(), getLogicalHeight());
-    service.start();
 
     service.setOnSucceeded(
         (_event) -> {
           this.logicalCells = service.getValue();
-          render();
+          render(false);
         });
 
     service.setOnFailed(
@@ -55,7 +58,7 @@ public class Game extends Region {
           throw new ServiceFailedException(event);
         });
 
-    render();
+    service.start();
   }
 
   public void runNextGeneration() {
@@ -64,7 +67,7 @@ public class Game extends Region {
     service.setOnSucceeded(
         (_event) -> {
           this.logicalCells = service.getValue();
-          render();
+          render(false);
         });
 
     service.setOnFailed(
@@ -91,31 +94,49 @@ public class Game extends Region {
     return this.edgeBehavior;
   }
 
-  public void setEdgeBehavior(EdgeBehavior edgeBehavior) {
-    this.edgeBehavior = edgeBehavior;
-  }
-
   public double getCellSize() {
     return this.cellSize;
   }
 
-  public void setCellSize(double cellSize) {
+  public void setProperties(
+      int gridWidth, int gridHeight, EdgeBehavior edgeBehavior, double cellSize) {
+    this.edgeBehavior = edgeBehavior;
     this.cellSize = cellSize;
-    render();
+
+    CreateDeadCellsService service = new CreateDeadCellsService(gridWidth, gridHeight);
+
+    service.setOnSucceeded(
+        (_event) -> {
+          this.logicalCells = service.getValue();
+          render(true);
+        });
+
+    service.setOnFailed(
+        (event) -> {
+          throw new ServiceFailedException(event);
+        });
+
+    service.start();
   }
 
-  private void render() throws ServiceFailedException {
-    boolean hasWidthChanged = getLogicalWidth() != cachedCheckBoxes.size();
-    int previousHeight = cachedCheckBoxes.size() == 0 ? 0 : cachedCheckBoxes.get(0).size();
-    boolean hasHeightChanged = getLogicalHeight() != previousHeight;
-
-    if (hasWidthChanged || hasHeightChanged) {
+  private void render(boolean recreateCheckboxes) throws ServiceFailedException {
+    if (recreateCheckboxes || cachedCheckBoxes == null) {
       CreateCheckboxesService service =
-          new CreateCheckboxesService(logicalCells, cellSize, (x, y) -> onCellClicked(x, y));
+          new CreateCheckboxesService(logicalCells, (x, y) -> onCellClicked(x, y));
 
       service.setOnSucceeded(
           (_event) -> {
+            File tempStylesheet;
+            try {
+              tempStylesheet = generateStylesheetForCheckBoxSize();
+            } catch (IOException err) {
+              throw new IllegalStateException(err);
+            }
+
             GridPane gridPane = new GridPane();
+            gridPane.setAlignment(Pos.CENTER);
+            gridPane.getStylesheets().add(tempStylesheet.toURI().toString());
+
             var newCheckBoxes = service.getValue();
 
             for (int x = 0; x < newCheckBoxes.size(); x++) {
@@ -126,7 +147,7 @@ public class Game extends Region {
 
             this.cachedCheckBoxes = newCheckBoxes;
 
-            this.getChildren().removeAll();
+            this.getChildren().clear();
             this.getChildren().add(gridPane);
           });
 
@@ -147,6 +168,25 @@ public class Game extends Region {
         }
       }
     }
+  }
+
+  private File generateStylesheetForCheckBoxSize() throws IOException {
+    // Borrowed from https://stackoverflow.com/a/44409349/473792
+    // It seems that this is truly the best way to programmatically create full CSS stylesheets at
+    // runtime
+    File tempStylesheet = File.createTempFile("gameoflife-checkboxsize", ".css");
+    tempStylesheet.deleteOnExit();
+
+    try (PrintWriter printWriter = new PrintWriter(tempStylesheet)) {
+      printWriter.println(".check-box > .box {");
+      printWriter.println("  -fx-padding: " + (cellSize / 2.5) + "px;");
+      printWriter.println("}");
+      printWriter.println(".check-box > .box >.mark {");
+      printWriter.println("  -fx-padding: " + cellSize + "px;");
+      printWriter.println("}");
+    }
+
+    return tempStylesheet;
   }
 
   private void onCellClicked(int x, int y) {
