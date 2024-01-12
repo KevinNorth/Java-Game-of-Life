@@ -71,25 +71,35 @@ public class App extends Application {
   }
 
   private Tab prepareSettingsTab(Game game) {
-    var wrapEdgesLabel = new Label("Wrap Edges");
-    var wrapEdgesCheckbox = new CheckBox();
-    var wrapEdgesPane = new HBox(wrapEdgesLabel, wrapEdgesCheckbox);
+    final var wrapEdgesLabel = new Label("Wrap Edges");
+    final var wrapEdgesCheckbox = new CheckBox();
+    final var wrapEdgesPane = new HBox(wrapEdgesLabel, wrapEdgesCheckbox);
 
-    var gridSizeLabel = new Label("Grid Size");
-    var gridWidthLabel = new Label("Width");
-    var gridWidthInput = createNumberField(20);
-    var gridWidthPane = new HBox(gridWidthLabel, gridWidthInput);
-    var gridHeightLabel = new Label("Height");
-    var gridHeightInput = createNumberField(20);
-    var gridHeightPane = new HBox(gridHeightLabel, gridHeightInput);
-    var gridSizePane = new HBox(gridSizeLabel, gridWidthPane, gridHeightPane);
+    final var gridSizeLabel = new Label("Grid Size");
+    final var gridWidthLabel = new Label("Width");
+    final var gridWidthInput = createNumberField(20);
+    final var gridWidthPane = new HBox(gridWidthLabel, gridWidthInput);
+    final var gridHeightLabel = new Label("Height");
+    final var gridHeightInput = createNumberField(20);
+    final var gridHeightPane = new HBox(gridHeightLabel, gridHeightInput);
+    final var gridSizePane = new HBox(gridSizeLabel, gridWidthPane, gridHeightPane);
 
-    var cellSizeLabel = new Label("Cell size");
-    var cellSizeInput = createNumberField(20);
-    var cellSizeUnits = new Label("pixels");
-    var cellSizePane = new HBox(cellSizeLabel, cellSizeInput, cellSizeUnits);
+    final var cellSizeLabel = new Label("Cell size");
+    final var cellSizeInput = createNumberField(20);
+    final var cellSizeUnits = new Label("pixels");
+    final var cellSizePane = new HBox(cellSizeLabel, cellSizeInput, cellSizeUnits);
 
-    var saveButton = new Button("Save");
+    final var saveButton = new Button("Save");
+    saveButton.setOnAction(
+        (_event) -> {
+          var converter = new IntegerStringConverter();
+          boolean wrapEdges = wrapEdgesCheckbox.isSelected();
+          int gridWidth = converter.fromString(gridWidthInput.getText());
+          int gridHeight = converter.fromString(gridHeightInput.getText());
+          double cellSize = (double) converter.fromString(cellSizeInput.getText());
+
+          onSaveClicked(game, wrapEdges, gridWidth, gridHeight, cellSize);
+        });
 
     var rootPane = new VBox(wrapEdgesPane, gridSizePane, cellSizePane, saveButton);
 
@@ -108,5 +118,11 @@ public class App extends Application {
         new TextFormatter<Integer>(new IntegerStringConverter(), 0, numberFilter));
     textField.setText(Integer.toString(initialValue));
     return textField;
+  }
+
+  private void onSaveClicked(
+      Game game, boolean wrapEdges, int gridWidth, int gridHeight, double cellSize) {
+    var edgeBehavior = wrapEdges ? EdgeBehavior.WRAPPED : EdgeBehavior.BOUNDED;
+    game.setProperties(gridWidth, gridHeight, edgeBehavior, cellSize);
   }
 }

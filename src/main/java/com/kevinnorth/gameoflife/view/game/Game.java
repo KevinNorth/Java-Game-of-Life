@@ -42,7 +42,6 @@ public class Game extends Region {
   public void resetGrid() {
     CreateDeadCellsService service =
         new CreateDeadCellsService(getLogicalWidth(), getLogicalHeight());
-    service.start();
 
     service.setOnSucceeded(
         (_event) -> {
@@ -55,7 +54,7 @@ public class Game extends Region {
           throw new ServiceFailedException(event);
         });
 
-    render();
+    service.start();
   }
 
   public void runNextGeneration() {
@@ -91,17 +90,29 @@ public class Game extends Region {
     return this.edgeBehavior;
   }
 
-  public void setEdgeBehavior(EdgeBehavior edgeBehavior) {
-    this.edgeBehavior = edgeBehavior;
-  }
-
   public double getCellSize() {
     return this.cellSize;
   }
 
-  public void setCellSize(double cellSize) {
+  public void setProperties(
+      int gridWidth, int gridHeight, EdgeBehavior edgeBehavior, double cellSize) {
+    this.edgeBehavior = edgeBehavior;
     this.cellSize = cellSize;
-    render();
+
+    CreateDeadCellsService service = new CreateDeadCellsService(gridWidth, gridHeight);
+
+    service.setOnSucceeded(
+        (_event) -> {
+          this.logicalCells = service.getValue();
+          render();
+        });
+
+    service.setOnFailed(
+        (event) -> {
+          throw new ServiceFailedException(event);
+        });
+
+    service.start();
   }
 
   private void render() throws ServiceFailedException {
@@ -126,7 +137,7 @@ public class Game extends Region {
 
             this.cachedCheckBoxes = newCheckBoxes;
 
-            this.getChildren().removeAll();
+            this.getChildren().clear();
             this.getChildren().add(gridPane);
           });
 
