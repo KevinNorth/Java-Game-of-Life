@@ -7,7 +7,7 @@ Created with Java 21 and JavaFX. Uses Maven for build management, JUnit 5 for te
 
  1. Clone the repo.
  2. Install Maven if it isn't already in your environment.
- 3. `mvn java:fx`
+ 3. `mvn javafx:run`
 
 ## Other commands
 
