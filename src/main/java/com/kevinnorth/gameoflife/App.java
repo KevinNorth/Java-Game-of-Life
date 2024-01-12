@@ -47,6 +47,7 @@ public class App extends Application {
 
     var scene = new Scene(rootPane, 640, 480);
     stage.setScene(scene);
+    stage.setTitle("Game of Life");
     stage.show();
   }
 
