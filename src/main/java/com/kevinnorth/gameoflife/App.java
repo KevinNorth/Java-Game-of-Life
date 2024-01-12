@@ -35,7 +35,7 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) {
-    var game = new Game(20, 20, 20, EdgeBehavior.BOUNDED);
+    var game = new Game(17, 28, 8, EdgeBehavior.BOUNDED);
 
     var tabPane = new TabPane();
     tabPane.getTabs().add(prepareSimiulationTab(game));
@@ -77,15 +77,15 @@ public class App extends Application {
 
     final var gridSizeLabel = new Label("Grid Size");
     final var gridWidthLabel = new Label("Width");
-    final var gridWidthInput = createNumberField(20);
+    final var gridWidthInput = createNumberField(game.getLogicalWidth());
     final var gridWidthPane = new HBox(gridWidthLabel, gridWidthInput);
     final var gridHeightLabel = new Label("Height");
-    final var gridHeightInput = createNumberField(20);
+    final var gridHeightInput = createNumberField(game.getLogicalHeight());
     final var gridHeightPane = new HBox(gridHeightLabel, gridHeightInput);
     final var gridSizePane = new HBox(gridSizeLabel, gridWidthPane, gridHeightPane);
 
     final var cellSizeLabel = new Label("Cell size");
-    final var cellSizeInput = createNumberField(20);
+    final var cellSizeInput = createNumberField((int) Math.floor(game.getCellSize()));
     final var cellSizeUnits = new Label("pixels");
     final var cellSizePane = new HBox(cellSizeLabel, cellSizeInput, cellSizeUnits);
 

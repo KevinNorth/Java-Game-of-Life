@@ -12,13 +12,11 @@ public class CreateCheckboxesService extends Service<ArrayList<ArrayList<CheckBo
   }
 
   private ArrayList<ArrayList<Cell>> cells;
-  private double cellSize;
   private OnClickHandler onClickHandler;
 
   public CreateCheckboxesService(
-      ArrayList<ArrayList<Cell>> cells, double cellSize, OnClickHandler onClickHandler) {
+      ArrayList<ArrayList<Cell>> cells, OnClickHandler onClickHandler) {
     this.cells = cells;
-    this.cellSize = cellSize;
     this.onClickHandler = onClickHandler;
   }
 
@@ -28,14 +26,12 @@ public class CreateCheckboxesService extends Service<ArrayList<ArrayList<CheckBo
       @Override
       protected ArrayList<ArrayList<CheckBox>> call() {
         var checkBoxes = new ArrayList<ArrayList<CheckBox>>();
-
         for (int x = 0; x < cells.size(); x++) {
           var column = new ArrayList<CheckBox>();
 
           for (int y = 0; y < cells.get(x).size(); y++) {
             CheckBox checkBox = new CheckBox();
             checkBox.setSelected(cells.get(x).get(y).alive());
-            checkBox.setPrefSize(cellSize, cellSize);
 
             final int finalX = x;
             final int finalY = y;
